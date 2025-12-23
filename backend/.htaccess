@@ -1,0 +1,32 @@
+# --- .htaccess for ecom-api ---
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # --- Block sensitive directories ---
+    RewriteRule ^config/ - [F]
+    RewriteRule ^seed/ - [F]
+    RewriteRule ^private/ - [F]
+
+    # --- Allow direct access to /routes/*.php ---
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^routes/ - [L]
+
+    # --- Serve static assets directly ---
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule \.(gif|jpe?g|png|bmp|ico|svg|js|css|pdf|woff2?)$ - [NC,L]
+
+    # --- Block PHP files outside /routes/ ---
+    RewriteRule \.php$ - [F]
+</IfModule>
+
+# --- Disable directory listings ---
+Options -Indexes
+
+# --- Prevent exposing hidden files ---
+<FilesMatch "(^\.|\.bak|\.env|\.git)">
+    Require all denied
+</FilesMatch>
+
+# --- Hide Apache version info ---
+ServerSignature Off
